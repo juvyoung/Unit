@@ -37,8 +37,10 @@ import hashlib
 ------------------------------------''' 
 def file_extention( filename ):
     
-    return ( os.path.splitext(filename)[0],
-             os.path.splitext(filename)[1])
+    (filepath, tempfilename) = os.path.split(filename)
+    (name, extension) = os.path.splitext(tempfilename)
+    
+    return ( name, extension )
 
 
 '''@package
@@ -116,7 +118,7 @@ def lsdir( folder, backup ):
             
             (str_file_name, str_file_type) = file_extention(line)
 #            print( "file name is: {0}\nfile type is: {1}".format( str_file_name, str_file_type ) )
-            if( os.path.splitext(os.path.basename(__file__))[0] not in str_file_name ) and \
+            if( os.path.splitext(os.path.basename(__file__))[0] != str_file_name ) and \
               ( True == (str_file_type in FILE_EXTENTION_ALLOWED ) ):
                 #{
                   bk_file = line.replace(folder, backup)
@@ -133,7 +135,7 @@ def lsdir( folder, backup ):
             print("====== exception =======")
 #        
     
-    
+                
 # =====================   Application Zone   ==================================
 '''------------------------------------------
            First Edition
@@ -151,7 +153,7 @@ def main():
 #    des_folder   = 'C:\\Users\\cn40335\\Documents\\Pyth\\FileSystem\\backup'
     
     src_folder = os.getcwd()
-    des_folder = input(" Please enter backup folder: ")
+    des_folder = input("Please enter backup folder --> ")
     print('Source folder is: {0}'.format(src_folder))
     print('Backup folder is: {0} \n'.format(des_folder))
     lsdir( src_folder, des_folder )
@@ -171,4 +173,5 @@ if __name__ == "__main__":
 '''
     src_code_hidden( old_path )
     src_code_hidden( new_bk )
+    print(os.path.splitext(os.path.basename(__file__))[0])
 '''    
