@@ -3,7 +3,7 @@ __copyright__   = "Copyright 2018"
 __version__     = "0.0.1"
 __email__       = ""
 __status__      = "Prototype"
-__date__        = "2018-xx-xx"
+__date__        = "2021-02-26"
 
 #import 
 import os
@@ -30,25 +30,34 @@ import hashlib
 #    
 #    return None
 
-'''@package
-       Function description
-       
-   Note: file extention type
-------------------------------------''' 
+
 def file_extention( filename ):
-    
-    return ( os.path.splitext(filename)[0],
-             os.path.splitext(filename)[1])
+    """
+    file path format extract
+    ----------
+    filename : file format
+        e.g. file1.txt; 
+             file2.c;
+             file3.h;
+
+    Returns
+    -------
+    name : file name
+    extension : file extension
+        e.g. .c, .h, .txt....
+
+    """
+    (filepath, tempfilename) = os.path.split(filename)
+    (name, extension) = os.path.splitext(tempfilename)
+    # print( 'file name is: {0}\nExtension is: {1}.'.center(20).format(name,extension))
+    return ( name, extension )
 
 
-'''@package
-       Function description
-       
-   Note: use 4 bytes of content in file 
-     then generate md5 value
-------------------------------------'''
 def md5check(fname):
-    
+    """
+    file content md5 checksum generation
+    Note: use 4 bytes of content in file then generate md5 checksum
+    """
     m = hashlib.md5()
     with open(fname, mode = 'r', encoding = 'utf-8', errors = 'ignore' ) as fileobj:
 #    with open(fname, encoding = 'utf-8') as fileobj:
@@ -63,16 +72,25 @@ def md5check(fname):
             
     return m.hexdigest()
 
-'''@package
-       Function description
-   Note: 
-------------------------------------'''    
+
 def file_copy( file, bckf ):
-  
-    # IF file already existed, check md5
+    """
+    files copy to destination folder
+    ----------
+    file : TYPE
+        DESCRIPTION.
+    bckf : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+    # IF file already existed, check md5 content update or not
     if os.path.isfile(bckf):
         old_md5 = md5check( file )
-        new_md5 = md5check( bckf )        
+        new_md5 = md5check( bckf )
            
         if new_md5 != old_md5:
             print( " old md5 checksum: {0} \n new md5 checksum: {1} "
@@ -95,14 +113,23 @@ def file_copy( file, bckf ):
                 print( "create backup folder FAILED ")
 
 
-    
-'''@package
-       Function description
-       
-   Note: Folder & Subfolder iterative process
-------------------------------------'''    
 def lsdir( folder, backup ):
+    """
+    Folder & Subfolder iterative copy
+    ----------
+    folder : source folder path
+        
+    backup : Target (Copy) folder path
+
+    Returns
+    -------
+    None.
+
+    Examples: 
+    >>>lsdir( current folder where .py script located,
+              Target folder path, just copy )
     
+    """    
     FILE_EXTENTION_ALLOWED = ['.txt','.py','.dbc','.c','.h']
     
     path = os.listdir(folder) #file list
@@ -113,15 +140,13 @@ def lsdir( folder, backup ):
  
         #    IF file: generate md5 checksum
         if os.path.isfile(line):
-            
             (str_file_name, str_file_type) = file_extention(line)
 #            print( "file name is: {0}\nfile type is: {1}".format( str_file_name, str_file_type ) )
-            if( os.path.splitext(os.path.basename(__file__))[0] not in str_file_name ) and \
+            if( os.path.splitext(os.path.basename(__file__))[0] != str_file_name ) and \
               ( True == (str_file_type in FILE_EXTENTION_ALLOWED ) ):
-                #{
                   bk_file = line.replace(folder, backup)
                   file_copy( line, bk_file )             # Copy to des folder 
-                #}
+
         #    IF folder: iterative 
         elif os.path.isdir(line):
             bk_file = line.replace(folder, backup)
@@ -131,27 +156,28 @@ def lsdir( folder, backup ):
             
         else:
             print("====== exception =======")
-#        
-    
-    
+
 # =====================   Application Zone   ==================================
 '''------------------------------------------
            First Edition
 
             by: Juvyoung
 --------------------------------------------'''
-print (" =================================")
-print ("           File Backup            ")
-print ("         Release version          ")
-print (" =================================\n")
+print ("\n".rjust(40, '=') +       
+       "  File backup script ".center(30) +
+       "\n".ljust(40, '=') ) 
 # ----------------------------------
 #         MAIN FUNCTION
 # ----------------------------------
 def main():    
 #    des_folder   = 'C:\\Users\\cn40335\\Documents\\Pyth\\FileSystem\\backup'
-    
+    try: 
+        raw_input          # Python 2
+    except NameError: 
+        raw_input = input  # Python 3
+        
     src_folder = os.getcwd()
-    des_folder = input(" Please enter backup folder: ")
+    des_folder = raw_input("Please enter backup folder --> ")
     print('Source folder is: {0}'.format(src_folder))
     print('Backup folder is: {0} \n'.format(des_folder))
     lsdir( src_folder, des_folder )
@@ -171,4 +197,5 @@ if __name__ == "__main__":
 '''
     src_code_hidden( old_path )
     src_code_hidden( new_bk )
+    print(os.path.splitext(os.path.basename(__file__))[0])
 '''    
